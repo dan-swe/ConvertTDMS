@@ -266,6 +266,12 @@ function [ConvertedData,ConvertVer,ChanNames,GroupNames,ci]=simpleConvertTDMS(va
 % the previous version of this code.
 %-------------------------------------------------------------------------
 
+%-------------------------------------------------------------------------
+%Dan Ring -v1.99 2017-12-22
+% postProcess: error for vector objects like:
+%     index.(cname).(cfield).value  had the value  'Volts'    'V'
+% implemented solution just to use first: index.(cname).(cfield).value(1)  
+%-------------------------------------------------------------------------
 
 %Initialize outputs
 ConvertVer='1.99';    %Version number of this conversion function
@@ -1292,7 +1298,7 @@ cntData=1;
 for i=1:numel(obFieldNames)
     
     cname=obFieldNames{i};
-    
+
     if strcmp(index.(cname).long_name,'Root')
         
         DataStructure.Root.Name=index.(cname).long_name;
@@ -1410,9 +1416,9 @@ for i=1:numel(obFieldNames)
                             Value=cell(index.(cname).(cfield).cnt,1);
                             for c=1:index.(cname).(cfield).cnt
                                 if iscell(index.(cname).(cfield).value)
-                                    Value(c)=index.(cname).(cfield).value;
+                                    Value(c)=index.(cname).(cfield).value(1); % use only first /Dan
                                 else
-                                    Value(c)={index.(cname).(cfield).value};
+                                    Value(c)={index.(cname).(cfield).value(1)}; % use only first /Dan
                                 end
                             end
                         end
